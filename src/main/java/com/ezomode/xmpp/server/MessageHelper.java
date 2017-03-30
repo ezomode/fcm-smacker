@@ -1,12 +1,12 @@
-package com.wedevol.xmpp.server;
+package com.ezomode.xmpp.server;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.json.simple.JSONValue;
 
-import com.wedevol.xmpp.bean.CcsInMessage;
-import com.wedevol.xmpp.bean.CcsOutMessage;
+import com.ezomode.xmpp.bean.CcsInMessage;
+import com.ezomode.xmpp.bean.CcsOutMessage;
 
 /**
  * Helper for the transformation of JSON messages to attribute maps and vice

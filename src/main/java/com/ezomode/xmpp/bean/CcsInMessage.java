@@ -1,4 +1,4 @@
-package com.wedevol.xmpp.bean;
+package com.ezomode.xmpp.bean;
 
 import java.util.Map;
 

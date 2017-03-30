@@ -1,4 +1,4 @@
-package com.wedevol.xmpp;
+package com.ezomode.xmpp;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -7,10 +7,10 @@ import java.util.Map;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
-import com.wedevol.xmpp.bean.CcsOutMessage;
-import com.wedevol.xmpp.server.CcsClient;
-import com.wedevol.xmpp.server.MessageHelper;
-import com.wedevol.xmpp.util.Util;
+import com.ezomode.xmpp.bean.CcsOutMessage;
+import com.ezomode.xmpp.server.CcsClient;
+import com.ezomode.xmpp.server.MessageHelper;
+import com.ezomode.xmpp.util.Util;
 
 /**
  * Entry Point class for the XMPP Server in dev mode for debugging and testing

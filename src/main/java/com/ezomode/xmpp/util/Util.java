@@ -1,4 +1,4 @@
-package com.wedevol.xmpp.util;
+package com.ezomode.xmpp.util;
 
 import java.util.UUID;
 
@@ -16,7 +16,7 @@ public class Util {
 	public static final String FCM_SERVER_CONNECTION = "gcm.googleapis.com";
 
 	// For the processor factory
-	public static final String PACKAGE = "com.wedevol";
+	public static final String PACKAGE = "com.ezomode";
 	public static final String BACKEND_ACTION_REGISTER = PACKAGE + ".REGISTER";
 	public static final String BACKEND_ACTION_ECHO = PACKAGE + ".ECHO";
 	public static final String BACKEND_ACTION_MESSAGE = PACKAGE + ".MESSAGE";

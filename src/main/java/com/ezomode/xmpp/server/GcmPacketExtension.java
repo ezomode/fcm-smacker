@@ -1,10 +1,10 @@
-package com.wedevol.xmpp.server;
+package com.ezomode.xmpp.server;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 
-import com.wedevol.xmpp.util.Util;
+import com.ezomode.xmpp.util.Util;
 
 /**
  * XMPP Packet Extension for GCM Cloud Connection Server

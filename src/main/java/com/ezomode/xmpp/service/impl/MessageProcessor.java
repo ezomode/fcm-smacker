@@ -1,11 +1,13 @@
-package com.wedevol.xmpp.service.impl;
+package com.ezomode.xmpp.service.impl;
 
-import com.wedevol.xmpp.bean.CcsInMessage;
-import com.wedevol.xmpp.bean.CcsOutMessage;
-import com.wedevol.xmpp.server.CcsClient;
-import com.wedevol.xmpp.server.MessageHelper;
-import com.wedevol.xmpp.service.PayloadProcessor;
-import com.wedevol.xmpp.util.Util;
+import com.ezomode.xmpp.bean.CcsInMessage;
+import com.ezomode.xmpp.bean.CcsOutMessage;
+import com.ezomode.xmpp.server.CcsClient;
+import com.ezomode.xmpp.server.MessageHelper;
+import com.ezomode.xmpp.service.PayloadProcessor;
+import com.ezomode.xmpp.util.Util;
+
+import java.util.Collection;
 
 /**
  * Handles an upstream message request
@@ -23,6 +25,11 @@ public class MessageProcessor implements PayloadProcessor {
 		CcsOutMessage outMessage = new CcsOutMessage(to, messageId, inMessage.getDataPayload());
 		String jsonRequest = MessageHelper.createJsonOutMessage(outMessage);
 		client.send(jsonRequest);
+	}
+
+	@Override
+	public Collection<String> getSupportedActions() {
+		return null;
 	}
 
 }

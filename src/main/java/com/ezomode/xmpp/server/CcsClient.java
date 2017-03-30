@@ -1,4 +1,4 @@
-package com.wedevol.xmpp.server;
+package com.ezomode.xmpp.server;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,10 +28,10 @@ import org.json.simple.parser.ParseException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.wedevol.xmpp.bean.CcsInMessage;
-import com.wedevol.xmpp.bean.CcsOutMessage;
-import com.wedevol.xmpp.service.PayloadProcessor;
-import com.wedevol.xmpp.util.Util;
+import com.ezomode.xmpp.bean.CcsInMessage;
+import com.ezomode.xmpp.bean.CcsOutMessage;
+import com.ezomode.xmpp.service.PayloadProcessor;
+import com.ezomode.xmpp.util.Util;
 
 /**
  * Sample Smack implementation of a client for FCM Cloud Connection Server. Most
