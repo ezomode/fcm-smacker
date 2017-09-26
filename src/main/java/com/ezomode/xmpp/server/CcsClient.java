@@ -94,7 +94,7 @@ public class CcsClient implements StanzaListener {
 		XMPPTCPConnection.setUseStreamManagementDefault(true);
 
 		XMPPTCPConnectionConfiguration.Builder config = XMPPTCPConnectionConfiguration.builder();
-		config.setServiceName("FCM XMPP Client Connection Server");
+		config.setXmppDomain("some.domain.com");
 		config.setHost(Util.FCM_SERVER);
 		config.setPort(Util.FCM_PORT);
 		config.setSecurityMode(SecurityMode.ifpossible);
@@ -107,56 +107,19 @@ public class CcsClient implements StanzaListener {
 		connection = new XMPPTCPConnection(config.build());
 
 		// Connect
-		connection.connect();
+        try {
+            connection.connect();
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Failed to connect.", e.getMessage());
 
-		// Enable automatic reconnection
+            return;
+        }
+
+        // Enable automatic reconnection
 		ReconnectionManager.getInstanceFor(connection).enableAutomaticReconnection();
 
 		// Handle reconnection and connection errors
-		connection.addConnectionListener(new ConnectionListener() {
-
-			@Override
-			public void reconnectionSuccessful() {
-				logger.log(Level.INFO, "Reconnection successful ...");
-				// TODO: handle the reconnecting successful
-			}
-
-			@Override
-			public void reconnectionFailed(Exception e) {
-				logger.log(Level.INFO, "Reconnection failed: ", e.getMessage());
-				// TODO: handle the reconnection failed
-			}
-
-			@Override
-			public void reconnectingIn(int seconds) {
-				logger.log(Level.INFO, "Reconnecting in %d secs", seconds);
-				// TODO: handle the reconnecting in
-			}
-
-			@Override
-			public void connectionClosedOnError(Exception e) {
-				logger.log(Level.INFO, "Connection closed on error");
-				// TODO: handle the connection closed on error
-			}
-
-			@Override
-			public void connectionClosed() {
-				logger.log(Level.INFO, "Connection closed");
-				// TODO: handle the connection closed
-			}
-
-			@Override
-			public void authenticated(XMPPConnection arg0, boolean arg1) {
-				logger.log(Level.INFO, "User authenticated");
-				// TODO: handle the authentication
-			}
-
-			@Override
-			public void connected(XMPPConnection arg0) {
-				logger.log(Level.INFO, "Connection established");
-				// TODO: handle the connection
-			}
-		});
+		connection.addConnectionListener(new MyConnectionListener());
 
 		// Handle incoming packets (the class implements the StanzaListener)
 		connection.addAsyncStanzaListener(this, new StanzaFilter() {
@@ -169,16 +132,23 @@ public class CcsClient implements StanzaListener {
 		// Log all outgoing packets
 		connection.addPacketInterceptor(new StanzaListener() {
 			@Override
-			public void processPacket(Stanza stanza) throws NotConnectedException {
+			public void processStanza(Stanza stanza) throws NotConnectedException {
 				logger.log(Level.INFO, "Sent: {}", stanza.toXML());
 			}
 		}, ForEveryStanza.INSTANCE);
 
-		connection.login(fcmServerUsername, mApiKey);
-		logger.log(Level.INFO, "Logged in: " + fcmServerUsername);
+        try {
+            connection.login(fcmServerUsername, mApiKey);
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Failed to login.", e.getMessage());
+
+            return;
+        }
+
+        logger.log(Level.INFO, "Logged in: " + fcmServerUsername);
 	}
 
-	public void reconnect() {
+	public void reconnect() throws InterruptedException {
 		while (true) {
 			try {
 				connect();
@@ -199,7 +169,7 @@ public class CcsClient implements StanzaListener {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void processPacket(Stanza packet) {
+	public void processStanza(Stanza packet) {
 		logger.log(Level.INFO, "Received: " + packet.toXML());
 		GcmPacketExtension gcmPacket = (GcmPacketExtension) packet.getExtension(Util.FCM_NAMESPACE);
 		String json = gcmPacket.getJson();
@@ -350,14 +320,16 @@ public class CcsClient implements StanzaListener {
 			connection.sendStanza(request);
 		} catch (NotConnectedException e) {
 			logger.log(Level.INFO, "There is no connection and the packet could not be sent: {}", request.toXML());
-		}
-	}
+		} catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Error sending with StanzaId=" + request.getStanzaId(), e.getMessage());
+        }
+    }
 
 	/**
 	 * Sends a message to multiple recipients (list). Kind of like the old HTTP
 	 * message with the list of regIds in the "registration_ids" field.
 	 */
-	public void sendBroadcast(CcsOutMessage outMessage, List<String> recipients) {
+	public void sendBroadcast(CcsOutMessage outMessage, List<String> recipients) throws InterruptedException {
 		Map<String, Object> map = MessageHelper.createAttributeMap(outMessage);
 		for (String toRegId : recipients) {
 			String messageId = Util.getUniqueMessageId();
@@ -368,4 +340,48 @@ public class CcsClient implements StanzaListener {
 		}
 	}
 
+    private static class MyConnectionListener implements ConnectionListener {
+
+        @Override
+        public void reconnectionSuccessful() {
+            logger.log(Level.INFO, "Reconnection successful ...");
+            // TODO: handle the reconnecting successful
+        }
+
+        @Override
+        public void reconnectionFailed(Exception e) {
+            logger.log(Level.INFO, "Reconnection failed: ", e.getMessage());
+            // TODO: handle the reconnection failed
+        }
+
+        @Override
+        public void reconnectingIn(int seconds) {
+            logger.log(Level.INFO, "Reconnecting in %d secs", seconds);
+            // TODO: handle the reconnecting in
+        }
+
+        @Override
+        public void connectionClosedOnError(Exception e) {
+            logger.log(Level.INFO, "Connection closed on error");
+            // TODO: handle the connection closed on error
+        }
+
+        @Override
+        public void connectionClosed() {
+            logger.log(Level.INFO, "Connection closed");
+            // TODO: handle the connection closed
+        }
+
+        @Override
+        public void authenticated(XMPPConnection arg0, boolean arg1) {
+            logger.log(Level.INFO, "User authenticated");
+            // TODO: handle the authentication
+        }
+
+        @Override
+        public void connected(XMPPConnection arg0) {
+            logger.log(Level.INFO, "Connection established");
+            // TODO: handle the connection
+        }
+    }
 }
